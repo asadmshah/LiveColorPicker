@@ -36,15 +36,7 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
         }
     }
 
-    override fun onColorTouched(x: Int, y: Int, color: Int, isDrag: Boolean) {
-
-    }
-
-    override fun onFreezeFrameClicked() {
-
-    }
-
-    override fun onHistoryClicked() {
-
+    override fun onTouchEvent(x: Float, y: Float, c: Int) {
+        view.setPoint(x, y)
     }
 }

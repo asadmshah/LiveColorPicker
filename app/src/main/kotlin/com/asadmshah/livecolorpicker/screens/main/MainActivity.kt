@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.widget.ImageView
 import com.asadmshah.livecolorpicker.R
 import com.asadmshah.livecolorpicker.widgets.BaseActivity
 import com.asadmshah.livecolorpicker.widgets.CameraOneTextureView
@@ -14,18 +13,10 @@ import com.asadmshah.livecolorpicker.widgets.TouchPainterView
 class MainActivity : BaseActivity(), MainContract.View {
 
     private val viewCamera by lazyView<CameraOneTextureView>(R.id.camera_view) {
-        it.onTouchListener = { x, y, c ->
-            viewTouchPainter.putPoint(x, y, c)
-        }
-        it.onImageListener = { bitmap ->
-            viewColor.setImageBitmap(bitmap)
-        }
-        it.onRectFListener = { rectF ->
-            viewTouchPainter.putRectF(rectF)
+        it.onTouchEvent = { x, y, c ->
+            presenter.onTouchEvent(x, y, c)
         }
     }
-    private val viewColor by lazyView<ImageView>(R.id.color_container)
-
     private val viewTouchPainter by lazyView<TouchPainterView>(R.id.touch_painter)
 
     private val presenter by lazy { MainPresenter(this@MainActivity) }
@@ -75,26 +66,6 @@ class MainActivity : BaseActivity(), MainContract.View {
         viewCamera.cameraDisconnect()
     }
 
-    override fun setMarker(x: Int, y: Int) {
-
-    }
-
-    override fun moveMarker(x: Int, y: Int) {
-
-    }
-
-    override fun setButtonColor(color: Int) {
-
-    }
-
-    override fun setColorTitle(title: String) {
-
-    }
-
-    override fun setColorHexCode(hexCode: String) {
-
-    }
-
     override fun hasCameraPermission(): Boolean {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
@@ -105,5 +76,9 @@ class MainActivity : BaseActivity(), MainContract.View {
 
     override fun setError(stringRes: Int) {
 
+    }
+
+    override fun setPoint(x: Float, y: Float) {
+        viewTouchPainter.putPoint(x, y)
     }
 }

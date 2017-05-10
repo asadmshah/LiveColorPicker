@@ -11,15 +11,7 @@ interface MainContract {
 
         fun cameraDisconnect()
 
-        fun setMarker(x: Int, y: Int)
-
-        fun moveMarker(x: Int, y: Int)
-
-        fun setButtonColor(color: Int)
-
-        fun setColorTitle(title: String)
-
-        fun setColorHexCode(hexCode: String)
+        fun setPoint(x: Float, y: Float)
 
         fun hasCameraPermission(): Boolean
 
@@ -42,11 +34,7 @@ interface MainContract {
 
         fun onCameraPermissionResult(isGranted: Boolean)
 
-        fun onColorTouched(x: Int, y: Int, color: Int, isDrag: Boolean)
-
-        fun onFreezeFrameClicked()
-
-        fun onHistoryClicked()
+        fun onTouchEvent(x: Float, y: Float, color: Int)
     }
 
 }

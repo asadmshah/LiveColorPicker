@@ -11,15 +11,6 @@
         android:layout_height="match_parent"
         />
 
-    <ImageView
-        android:id="@+id/color_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:scaleType="center"
-        android:alpha="0.75"
-        />
-
     <com.asadmshah.livecolorpicker.widgets.TouchPainterView
         android:id="@+id/touch_painter"
         android:layout_width="match_parent"

@@ -10,7 +10,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 
 class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
 
@@ -20,16 +19,17 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
     private var previewH: Int = 0
     private var pointRectF: RectF? = null
 
-    var onTouchListener: ((Int, Int, Int) -> Unit)? = null
-    var onImageListener: ((Bitmap) -> Unit)? = null
-    var onRectFListener: ((RectF) -> Unit)? = null
+    private var previousTouchX: Float = Float.NEGATIVE_INFINITY
+    private var previousTouchY: Float = Float.NEGATIVE_INFINITY
+    var onTouchEvent: ((Float, Float, Int) -> Unit)? = null
 
     var dstBitmap: Bitmap? = null
 
     var txtMatrix: Matrix? = null
     var bmpMatrix: Matrix? = null
 
-    var disposable: Disposable? = null
+    var colorDisposable: Disposable? = null
+    var imageDisposable: Disposable? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -43,20 +43,8 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                val initX = event.x
-                val initY = event.y
-                val points = floatArrayOf(initX, initY)
-                captureThen {
-                    bmpMatrix!!.mapPoints(points)
-
-                    val x = (points[0] - pointRectF!!.left).toInt()
-                    val y = (points[1] - pointRectF!!.top).toInt()
-                    val color = it.getPixel(x, y)
-
-                    onTouchListener?.invoke(initX.toInt(), initY.toInt(), color)
-                }
-            }
+            MotionEvent.ACTION_DOWN -> captureColor(event.x, event.y) { x, y, c -> onTouchEvent?.invoke(x, y, c) }
+            MotionEvent.ACTION_MOVE -> captureColor(event.x, event.y) { x, y, c -> onTouchEvent?.invoke(x, y, c) }
         }
 
         return true
@@ -75,8 +63,6 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        Timber.d("onSurfaceTextureAvailable: $width, $height")
-
         val camera = Camera.open()
         val params = camera.parameters
 
@@ -118,8 +104,8 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
         bmpMatrix!!.postRotate(-90f, centerX, centerY)
         bmpMatrix!!.postScale(scaleXYRev, scaleXYRev, centerX, centerY)
 
-        val pointRectL = (centerX - previewW/2)
-        val pointRectT = (centerY - previewH/2)
+        val pointRectL = (centerX - previewW / 2)
+        val pointRectT = (centerY - previewH / 2)
         pointRectF = RectF(pointRectL, pointRectT, previewW.toFloat(), previewH.toFloat())
 
         camera.setPreviewTexture(surface)
@@ -133,8 +119,11 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
     }
 
     fun cameraDisconnect() {
-        disposable?.dispose()
-        disposable = null
+        colorDisposable?.dispose()
+        colorDisposable = null
+
+        imageDisposable?.dispose()
+        imageDisposable = null
 
         surfaceTextureListener = null
 
@@ -146,23 +135,26 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
         dstBitmap = null
     }
 
-    fun cameraCapture() {
-        captureThen {
-            onImageListener?.invoke(Bitmap.createBitmap(it))
-        }
-    }
+    private fun captureColor(x: Float, y: Float, callback: (Float, Float, Int) -> Unit) {
+        previousTouchX = x
+        previousTouchY = y
 
-    private fun captureThen(function: (Bitmap) -> Unit) {
-        if (!(disposable?.isDisposed ?: true)) return
+        if (!(colorDisposable?.isDisposed ?: true)) return
 
-        disposable = Single
+        colorDisposable = Single
                 .fromCallable {
                     getBitmap(dstBitmap)
-                    Bitmap.createBitmap(dstBitmap)
+                    val ax = previousTouchX
+                    val ay = previousTouchY
+                    val points = floatArrayOf(ax, ay)
+                    bmpMatrix!!.mapPoints(points)
+                    val bx = (points[0] - pointRectF!!.left).toInt()
+                    val by = (points[1] - pointRectF!!.top).toInt()
+                    Triple(ax, ay, dstBitmap!!.getPixel(bx, by))
                 }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { bitmap, _ -> function(bitmap) }
+                .subscribe { (x, y, color), _ -> callback(x, y, color) }
     }
 
 }
