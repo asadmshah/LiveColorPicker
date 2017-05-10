@@ -41,6 +41,10 @@ interface MainContract {
         fun onCameraPermissionResult(isGranted: Boolean)
 
         fun onTouchEvent(x: Float, y: Float, c: Int)
+
+        fun onCaptureButtonClicked()
+
+        fun onColorsButtonClicked()
     }
 
 }

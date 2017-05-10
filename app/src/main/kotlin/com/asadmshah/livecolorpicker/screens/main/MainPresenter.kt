@@ -42,4 +42,12 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
         view.setColorCode(c)
         view.setColorName("Unknown")
     }
+
+    override fun onCaptureButtonClicked() {
+
+    }
+
+    override fun onColorsButtonClicked() {
+
+    }
 }

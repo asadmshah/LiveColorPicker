@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.widget.ImageView
 import android.widget.TextView
 import com.asadmshah.livecolorpicker.R
 import com.asadmshah.livecolorpicker.widgets.BaseActivity
@@ -23,12 +24,17 @@ class MainActivity : BaseActivity(), MainContract.View {
     private val viewColorCircle by lazyView<CircleView>(R.id.color_circle)
     private val viewColorName by lazyView<TextView>(R.id.color_name)
     private val viewColorCode by lazyView<TextView>(R.id.color_code)
+    private val viewCaptureButton by lazyView<ImageView>(R.id.button_capture)
+    private val viewColorsButton by lazyView<ImageView>(R.id.button_colors)
 
     private val presenter by lazy { MainPresenter(this@MainActivity) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewCaptureButton.setOnClickListener { presenter.onCaptureButtonClicked() }
+        viewColorsButton.setOnClickListener { presenter.onColorsButtonClicked() }
 
         presenter.onCreate(savedInstanceState)
     }

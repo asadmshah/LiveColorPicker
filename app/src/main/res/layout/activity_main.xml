@@ -35,6 +35,36 @@
             app:srcCompat="@color/colorAccent"
             />
 
+        <ImageView
+            android:id="@+id/button_capture"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="64dp"
+            android:layout_marginRight="64dp"
+            android:layout_toLeftOf="@id/color_circle"
+            android:layout_toStartOf="@id/color_circle"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_camera_white_24dp"
+            />
+
+        <ImageView
+            android:id="@+id/button_colors"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="64dp"
+            android:layout_marginStart="64dp"
+            android:layout_toEndOf="@id/color_circle"
+            android:layout_toRightOf="@id/color_circle"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_color_lens_white_24dp"
+            />
+
         <TextView
             android:id="@+id/color_name"
             android:layout_width="wrap_content"
