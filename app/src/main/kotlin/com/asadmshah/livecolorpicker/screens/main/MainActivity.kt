@@ -5,9 +5,11 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.widget.TextView
 import com.asadmshah.livecolorpicker.R
 import com.asadmshah.livecolorpicker.widgets.BaseActivity
 import com.asadmshah.livecolorpicker.widgets.CameraOneTextureView
+import com.asadmshah.livecolorpicker.widgets.CircleView
 import com.asadmshah.livecolorpicker.widgets.TouchPainterView
 
 class MainActivity : BaseActivity(), MainContract.View {
@@ -18,6 +20,9 @@ class MainActivity : BaseActivity(), MainContract.View {
         }
     }
     private val viewTouchPainter by lazyView<TouchPainterView>(R.id.touch_painter)
+    private val viewColorCircle by lazyView<CircleView>(R.id.color_circle)
+    private val viewColorName by lazyView<TextView>(R.id.color_name)
+    private val viewColorCode by lazyView<TextView>(R.id.color_code)
 
     private val presenter by lazy { MainPresenter(this@MainActivity) }
 
@@ -78,7 +83,19 @@ class MainActivity : BaseActivity(), MainContract.View {
 
     }
 
+    override fun setColor(color: Int) {
+        viewColorCircle.circleColor = color
+    }
+
     override fun setPoint(x: Float, y: Float) {
         viewTouchPainter.putPoint(x, y)
+    }
+
+    override fun setColorName(color: String) {
+        viewColorName.text = color
+    }
+
+    override fun setColorCode(color: Int) {
+        viewColorCode.text = String.format("#%06X", (0xFFFFFF and color))
     }
 }

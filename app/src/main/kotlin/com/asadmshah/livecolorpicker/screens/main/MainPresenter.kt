@@ -38,5 +38,8 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
 
     override fun onTouchEvent(x: Float, y: Float, c: Int) {
         view.setPoint(x, y)
+        view.setColor(c)
+        view.setColorCode(c)
+        view.setColorName("Unknown")
     }
 }

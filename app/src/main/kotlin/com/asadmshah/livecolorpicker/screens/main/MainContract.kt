@@ -13,6 +13,12 @@ interface MainContract {
 
         fun setPoint(x: Float, y: Float)
 
+        fun setColor(color: Int)
+
+        fun setColorName(color: String)
+
+        fun setColorCode(color: Int)
+
         fun hasCameraPermission(): Boolean
 
         fun requestCameraPermission()
@@ -34,7 +40,7 @@ interface MainContract {
 
         fun onCameraPermissionResult(isGranted: Boolean)
 
-        fun onTouchEvent(x: Float, y: Float, color: Int)
+        fun onTouchEvent(x: Float, y: Float, c: Int)
     }
 
 }
