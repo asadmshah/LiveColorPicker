@@ -1,5 +1,6 @@
 package com.asadmshah.livecolorpicker.screens.main
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.annotation.StringRes
 
@@ -7,9 +8,17 @@ interface MainContract {
 
     interface View {
 
-        fun cameraConnect()
+        fun cameraOpen()
 
-        fun cameraDisconnect()
+        fun cameraClose()
+
+        fun setCameraTrackerEnabled(enabled: Boolean)
+
+        fun setImageTrackerEnabled(enabled: Boolean)
+
+        fun captureImage(onCapture: (Bitmap) -> Unit)
+
+        fun setImage(bitmap: Bitmap?)
 
         fun setPoint(x: Float, y: Float)
 
@@ -23,7 +32,7 @@ interface MainContract {
 
         fun requestCameraPermission()
 
-        fun setError(@StringRes stringRes: Int)
+        fun setError(@StringRes stringRes: Int, vararg args: Any)
     }
 
     interface Presenter {

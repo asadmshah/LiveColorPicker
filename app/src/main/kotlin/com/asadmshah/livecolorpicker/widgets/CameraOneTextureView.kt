@@ -21,7 +21,7 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
 
     private var previousTouchX: Float = Float.NEGATIVE_INFINITY
     private var previousTouchY: Float = Float.NEGATIVE_INFINITY
-    var onTouchEvent: ((Float, Float, Int) -> Unit)? = null
+    var onTrackEvent: ((Float, Float, Int) -> Unit)? = null
 
     var dstBitmap: Bitmap? = null
 
@@ -42,9 +42,11 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (onTrackEvent == null) return false
+
         when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> captureColor(event.x, event.y) { x, y, c -> onTouchEvent?.invoke(x, y, c) }
-            MotionEvent.ACTION_MOVE -> captureColor(event.x, event.y) { x, y, c -> onTouchEvent?.invoke(x, y, c) }
+            MotionEvent.ACTION_DOWN -> captureColor(event.x, event.y) { x, y, c -> onTrackEvent?.invoke(x, y, c) }
+            MotionEvent.ACTION_MOVE -> captureColor(event.x, event.y) { x, y, c -> onTrackEvent?.invoke(x, y, c) }
         }
 
         return true
@@ -135,6 +137,21 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
         dstBitmap = null
     }
 
+    fun captureImage(onCapture: (Bitmap) -> Unit) {
+        if (!(imageDisposable?.isDisposed ?: true)) return
+
+        imageDisposable = Single
+                .fromCallable {
+                    getBitmap(dstBitmap)
+                    val matrix = Matrix()
+                    matrix.postRotate(90f, (width/2).toFloat(), (height/2).toFloat())
+                    Bitmap.createBitmap(dstBitmap!!, 0, 0, dstBitmap!!.width, dstBitmap!!.height, matrix, true)
+                }
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { bitmap, _ -> onCapture(bitmap) }
+    }
+
     private fun captureColor(x: Float, y: Float, callback: (Float, Float, Int) -> Unit) {
         previousTouchX = x
         previousTouchY = y
@@ -150,7 +167,9 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
                     bmpMatrix!!.mapPoints(points)
                     val bx = (points[0] - pointRectF!!.left).toInt()
                     val by = (points[1] - pointRectF!!.top).toInt()
-                    Triple(ax, ay, dstBitmap!!.getPixel(bx, by))
+                    val cx = Math.max(0, Math.min(dstBitmap!!.width-1, bx))
+                    val cy = Math.max(0, Math.min(dstBitmap!!.height-1, by))
+                    Triple(Math.max(0f, Math.min(ax, width.toFloat())), Math.max(0f, Math.min(ay, height.toFloat())), dstBitmap!!.getPixel(cx, cy))
                 }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())

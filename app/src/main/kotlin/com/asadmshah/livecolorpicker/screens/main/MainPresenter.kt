@@ -4,20 +4,54 @@ import android.os.Bundle
 
 class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
 
+    private val doTransitionToStatic: () -> Unit = {
+        nextTransition = null
+        view.captureImage {
+            view.setImage(it)
+            view.setImageTrackerEnabled(true)
+            view.setCameraTrackerEnabled(false)
+            nextTransition = doTransitionToDynamic
+        }
+    }
+
+    private val doTransitionToDynamic: () -> Unit = {
+        nextTransition = null
+        view.setImage(null)
+        view.setImageTrackerEnabled(false)
+        view.setCameraTrackerEnabled(true)
+        nextTransition = doTransitionToStatic
+    }
+
+    var nextTransition: (() -> Unit)? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
     }
 
     override fun onResume() {
         if (view.hasCameraPermission()) {
-            view.cameraConnect()
+            try {
+                view.cameraOpen()
+                doTransitionToDynamic()
+            } catch (t: Throwable) {
+                // TODO: Handle Error
+            }
         } else {
             view.requestCameraPermission()
         }
     }
 
     override fun onPause() {
-        view.cameraDisconnect()
+        view.setImageTrackerEnabled(false)
+        view.setImage(null)
+        view.setCameraTrackerEnabled(false)
+        nextTransition = null
+
+        try {
+            view.cameraClose()
+        } catch (t: Throwable) {
+            // TODO: Handle Error
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -30,7 +64,12 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
 
     override fun onCameraPermissionResult(isGranted: Boolean) {
         if (isGranted) {
-            view.cameraConnect()
+            try {
+                view.cameraOpen()
+                doTransitionToDynamic()
+            } catch (t: Throwable) {
+                // TODO: Handle Error
+            }
         } else {
             // TODO: Handle Permission Error
         }
@@ -44,7 +83,7 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
     }
 
     override fun onCaptureButtonClicked() {
-
+        nextTransition?.invoke()
     }
 
     override fun onColorsButtonClicked() {

@@ -2,24 +2,19 @@ package com.asadmshah.livecolorpicker.screens.main
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.widget.ImageView
 import android.widget.TextView
 import com.asadmshah.livecolorpicker.R
-import com.asadmshah.livecolorpicker.widgets.BaseActivity
-import com.asadmshah.livecolorpicker.widgets.CameraOneTextureView
-import com.asadmshah.livecolorpicker.widgets.CircleView
-import com.asadmshah.livecolorpicker.widgets.TouchPainterView
+import com.asadmshah.livecolorpicker.widgets.*
 
 class MainActivity : BaseActivity(), MainContract.View {
 
-    private val viewCamera by lazyView<CameraOneTextureView>(R.id.camera_view) {
-        it.onTouchEvent = { x, y, c ->
-            presenter.onTouchEvent(x, y, c)
-        }
-    }
+    private val viewCamera by lazyView<CameraOneTextureView>(R.id.camera_view)
+    private val viewImage by lazyView<TrackableImageView>(R.id.image_view)
     private val viewTouchPainter by lazyView<TouchPainterView>(R.id.touch_painter)
     private val viewColorCircle by lazyView<CircleView>(R.id.color_circle)
     private val viewColorName by lazyView<TextView>(R.id.color_name)
@@ -69,12 +64,32 @@ class MainActivity : BaseActivity(), MainContract.View {
         presenter.onCameraPermissionResult(grantResults[0] == PackageManager.PERMISSION_GRANTED)
     }
 
-    override fun cameraConnect() {
+    override fun cameraOpen() {
         viewCamera.cameraConnect()
     }
 
-    override fun cameraDisconnect() {
+    override fun cameraClose() {
         viewCamera.cameraDisconnect()
+    }
+
+    override fun setCameraTrackerEnabled(enabled: Boolean) {
+        if (enabled) {
+            viewCamera.onTrackEvent = { x, y, c ->
+                presenter.onTouchEvent(x, y, c)
+            }
+        } else {
+            viewCamera.onTrackEvent = null
+        }
+    }
+
+    override fun setImageTrackerEnabled(enabled: Boolean) {
+        if (enabled) {
+            viewImage.onTrackEvent = { x, y, c ->
+                presenter.onTouchEvent(x, y, c)
+            }
+        } else {
+            viewImage.onTrackEvent = null
+        }
     }
 
     override fun hasCameraPermission(): Boolean {
@@ -85,7 +100,7 @@ class MainActivity : BaseActivity(), MainContract.View {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 0)
     }
 
-    override fun setError(stringRes: Int) {
+    override fun setError(stringRes: Int, vararg args: Any) {
 
     }
 
@@ -103,5 +118,13 @@ class MainActivity : BaseActivity(), MainContract.View {
 
     override fun setColorCode(color: Int) {
         viewColorCode.text = String.format("#%06X", (0xFFFFFF and color))
+    }
+
+    override fun captureImage(onCapture: (Bitmap) -> Unit) {
+        viewCamera.captureImage(onCapture)
+    }
+
+    override fun setImage(bitmap: Bitmap?) {
+        viewImage.setImageBitmap(bitmap)
     }
 }
