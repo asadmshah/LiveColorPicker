@@ -44,11 +44,11 @@
 
         <ImageView
             android:id="@+id/button_capture"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="64dp"
-            android:layout_marginRight="64dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="16dp"
             android:layout_toLeftOf="@id/color_circle"
             android:layout_toStartOf="@id/color_circle"
             android:background="?attr/selectableItemBackground"
@@ -59,11 +59,11 @@
 
         <ImageView
             android:id="@+id/button_colors"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="64dp"
-            android:layout_marginStart="64dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
             android:layout_toEndOf="@id/color_circle"
             android:layout_toRightOf="@id/color_circle"
             android:background="?attr/selectableItemBackground"
@@ -84,7 +84,7 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="Deep Purple"
+            tools:text="Blue With a Tiny Hint of Purple"
             />
 
         <TextView
