@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'org.jetbrains.kotlin.kapt'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 25
@@ -26,6 +26,11 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
         test.java.srcDirs += 'src/test/kotlin'
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility = JavaVersion.VERSION_1_7
+    }
 }
 
 repositories {
@@ -43,6 +48,8 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.0.1'
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.0'
+    compile 'com.google.dagger:dagger:2.10'
+    kapt    'com.google.dagger:dagger-compiler:2.10'
 
     testCompile 'junit:junit:4.12'
 
@@ -50,4 +57,3 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
-

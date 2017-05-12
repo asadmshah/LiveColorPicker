@@ -1,8 +1,16 @@
 package com.asadmshah.livecolorpicker.screens.main
 
 import android.os.Bundle
+import com.asadmshah.livecolorpicker.colors.Colorizer
+import com.asadmshah.livecolorpicker.screens.ActivityComponent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
+class MainPresenter(val view: MainContract.View, component: ActivityComponent) : MainContract.Presenter {
+
+    @Inject lateinit var colorizer: Colorizer
 
     private val doTransitionToStatic: () -> Unit = {
         nextTransition = null
@@ -23,6 +31,11 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
     }
 
     var nextTransition: (() -> Unit)? = null
+    var colorizerDisposable: Disposable? = null
+
+    init {
+        component.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -59,7 +72,7 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
     }
 
     override fun onDestroy() {
-
+        colorizerDisposable?.dispose()
     }
 
     override fun onCameraPermissionResult(isGranted: Boolean) {
@@ -76,10 +89,17 @@ class MainPresenter(val view: MainContract.View) : MainContract.Presenter {
     }
 
     override fun onTouchEvent(x: Float, y: Float, c: Int) {
-        view.setPoint(x, y)
-        view.setColor(c)
-        view.setColorCode(c)
-        view.setColorName("Unknown")
+        colorizerDisposable?.dispose()
+
+        colorizer.map(c)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { (name, _, _), _ ->
+                    view.setPoint(x, y)
+                    view.setColor(c)
+                    view.setColorCode(c)
+                    view.setColorName(name)
+                }
     }
 
     override fun onCaptureButtonClicked() {

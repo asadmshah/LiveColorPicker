@@ -22,7 +22,7 @@ class MainActivity : BaseActivity(), MainContract.View {
     private val viewCaptureButton by lazyView<ImageView>(R.id.button_capture)
     private val viewColorsButton by lazyView<ImageView>(R.id.button_colors)
 
-    private val presenter by lazy { MainPresenter(this@MainActivity) }
+    private val presenter by lazy { MainPresenter(this@MainActivity, this@MainActivity.component) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
