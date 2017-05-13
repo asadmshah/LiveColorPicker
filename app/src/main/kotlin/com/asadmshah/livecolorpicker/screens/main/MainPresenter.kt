@@ -3,15 +3,22 @@ package com.asadmshah.livecolorpicker.screens.main
 import android.graphics.Bitmap
 import android.os.Bundle
 import com.asadmshah.livecolorpicker.colors.Colorizer
+import com.asadmshah.livecolorpicker.database.ColorsStore
+import com.asadmshah.livecolorpicker.models.Color
+import com.asadmshah.livecolorpicker.models.ColorList
+import com.asadmshah.livecolorpicker.models.ColorPalette
 import com.asadmshah.livecolorpicker.screens.ActivityComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class MainPresenter(val view: MainContract.View, component: ActivityComponent) : MainContract.Presenter {
 
     @Inject lateinit var colorizer: Colorizer
+    @Inject lateinit var colorsStore: ColorsStore
 
     private val doTransitionToStatic: () -> Unit = {
         nextTransition = null
@@ -135,11 +142,18 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
         colorizerDisposable?.dispose()
         colorizerDisposable = colorizer
                 .palette(bitmap)
+                .map { Color(it.first, it.third) }
                 .toList()
+                .map { items -> ColorPalette(Date(), ColorList().apply { addAll(items) }) }
+                .flatMap { colorsStore.insert(it) }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { colors, _ ->
-
+                .subscribe { colors, error ->
+                    if (error != null) {
+                        Timber.d(error)
+                    } else {
+                        Timber.d("Inserted: $colors")
+                    }
                 }
     }
 }
