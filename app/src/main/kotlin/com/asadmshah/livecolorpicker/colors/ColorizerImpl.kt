@@ -1,6 +1,8 @@
 package com.asadmshah.livecolorpicker.colors
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.support.v7.graphics.Palette
 import com.asadmshah.livecolorpicker.R
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -40,4 +42,12 @@ class ColorizerImpl constructor(val context: Context) : Colorizer {
                 .map { Triple(it.name, it.rgb.toHex(), it.rgb.toInt()) }
     }
 
+    override fun palette(bitmap: Bitmap): Observable<Triple<String, String, Int>> {
+        return Observable
+                .fromCallable {
+                    Palette.from(bitmap).generate().swatches
+                }
+                .flatMapIterable { it }
+                .flatMap { map(it.rgb).toObservable() }
+    }
 }

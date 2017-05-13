@@ -44,6 +44,7 @@ kapt {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:palette-v7:25.3.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.0.1'
