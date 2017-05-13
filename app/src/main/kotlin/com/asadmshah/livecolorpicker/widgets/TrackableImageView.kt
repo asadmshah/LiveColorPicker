@@ -37,6 +37,10 @@ class TrackableImageView: ImageView {
         cacheBitmap = null
     }
 
+    fun getImageBitmap(): Bitmap? {
+        return drawingCache
+    }
+
     private fun captureColor(x: Float, y: Float) {
         if (drawable == null) return
 

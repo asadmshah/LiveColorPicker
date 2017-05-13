@@ -1,5 +1,6 @@
 package com.asadmshah.livecolorpicker.screens.main
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import com.asadmshah.livecolorpicker.colors.Colorizer
 import com.asadmshah.livecolorpicker.screens.ActivityComponent
@@ -19,6 +20,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
             view.setImageTrackerEnabled(true)
             view.setCameraTrackerEnabled(false)
             nextTransition = doTransitionToDynamic
+            isStatic = true
         }
     }
 
@@ -28,9 +30,12 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
         view.setImageTrackerEnabled(false)
         view.setCameraTrackerEnabled(true)
         nextTransition = doTransitionToStatic
+        isStatic = false
     }
 
+    var isStatic: Boolean = false
     var nextTransition: (() -> Unit)? = null
+    var isCameraOpened: Boolean = false
     var colorizerDisposable: Disposable? = null
 
     init {
@@ -46,6 +51,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
             try {
                 view.cameraOpen()
                 doTransitionToDynamic()
+                isCameraOpened = true
             } catch (t: Throwable) {
                 // TODO: Handle Error
             }
@@ -80,6 +86,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
             try {
                 view.cameraOpen()
                 doTransitionToDynamic()
+                isCameraOpened = true
             } catch (t: Throwable) {
                 // TODO: Handle Error
             }
@@ -108,5 +115,31 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
 
     override fun onColorsButtonClicked() {
 
+    }
+
+    override fun onPaletteButtonClicked() {
+        if (!isCameraOpened) return
+
+        if (isStatic) requestStaticPalette() else requestDynamicPalette()
+    }
+
+    fun requestStaticPalette() {
+        view.getImage()?.let { requestPalette(it) }
+    }
+
+    fun requestDynamicPalette() {
+        view.captureImage { requestPalette(it) }
+    }
+
+    fun requestPalette(bitmap: Bitmap) {
+        colorizerDisposable?.dispose()
+        colorizerDisposable = colorizer
+                .palette(bitmap)
+                .toList()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { colors, _ ->
+
+                }
     }
 }

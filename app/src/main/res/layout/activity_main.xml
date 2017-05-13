@@ -26,81 +26,84 @@
         android:layout_height="match_parent"
         />
 
-    <RelativeLayout
+    <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:columnCount="3"
+        app:rowCount="4"
         >
-
-        <com.asadmshah.livecolorpicker.widgets.CircleView
-            android:id="@+id/color_circle"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="16dp"
-            app:srcCompat="@color/colorAccent"
-            />
-
-        <ImageView
-            android:id="@+id/button_capture"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_toLeftOf="@id/color_circle"
-            android:layout_toStartOf="@id/color_circle"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:scaleType="center"
-            app:srcCompat="@drawable/ic_camera_white_24dp"
-            />
-
-        <ImageView
-            android:id="@+id/button_colors"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_toEndOf="@id/color_circle"
-            android:layout_toRightOf="@id/color_circle"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:scaleType="center"
-            app:srcCompat="@drawable/ic_view_module_white_24dp"
-            />
 
         <TextView
             android:id="@+id/color_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/color_circle"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
             android:maxLines="1"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
+            app:layout_columnSpan="3"
+            app:layout_gravity="center_horizontal"
             tools:text="Blue With a Tiny Hint of Purple"
+            />
+
+        <com.asadmshah.livecolorpicker.widgets.CircleView
+            android:id="@+id/color_circle"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            app:layout_columnSpan="3"
+            app:layout_gravity="center"
+            app:srcCompat="@color/colorAccent"
             />
 
         <TextView
             android:id="@+id/color_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/color_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="4dp"
             android:maxLines="1"
             android:textColor="@android:color/white"
             android:textSize="14sp"
+            app:layout_columnSpan="3"
+            app:layout_gravity="center_horizontal"
             tools:text="#0230303"
             />
 
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/button_capture"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:scaleType="center"
+            app:layout_columnSpan="1"
+            app:layout_columnWeight="1"
+            app:srcCompat="@drawable/ic_camera_white_24dp"
+            />
+
+        <ImageView
+            android:id="@+id/button_palette"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:scaleType="center"
+            app:layout_columnSpan="1"
+            app:layout_columnWeight="1"
+            app:srcCompat="@drawable/ic_color_lens_white_24dp"
+            />
+
+        <ImageView
+            android:id="@+id/button_colors"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:scaleType="center"
+            app:layout_columnSpan="1"
+            app:layout_columnWeight="1"
+            app:srcCompat="@drawable/ic_view_module_white_24dp"
+            />
+
+    </android.support.v7.widget.GridLayout>
 
 </FrameLayout>

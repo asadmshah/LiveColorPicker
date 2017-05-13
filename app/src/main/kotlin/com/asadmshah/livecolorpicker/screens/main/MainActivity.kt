@@ -20,6 +20,7 @@ class MainActivity : BaseActivity(), MainContract.View {
     private val viewColorName by lazyView<TextView>(R.id.color_name)
     private val viewColorCode by lazyView<TextView>(R.id.color_code)
     private val viewCaptureButton by lazyView<ImageView>(R.id.button_capture)
+    private val viewPaletteButton by lazyView<ImageView>(R.id.button_palette)
     private val viewColorsButton by lazyView<ImageView>(R.id.button_colors)
 
     private val presenter by lazy { MainPresenter(this@MainActivity, this@MainActivity.component) }
@@ -29,6 +30,7 @@ class MainActivity : BaseActivity(), MainContract.View {
         setContentView(R.layout.activity_main)
 
         viewCaptureButton.setOnClickListener { presenter.onCaptureButtonClicked() }
+        viewPaletteButton.setOnClickListener { presenter.onPaletteButtonClicked() }
         viewColorsButton.setOnClickListener { presenter.onColorsButtonClicked() }
 
         presenter.onCreate(savedInstanceState)
@@ -126,5 +128,9 @@ class MainActivity : BaseActivity(), MainContract.View {
 
     override fun setImage(bitmap: Bitmap?) {
         viewImage.setImageBitmap(bitmap)
+    }
+
+    override fun getImage(): Bitmap? {
+        return viewImage.getImageBitmap()
     }
 }

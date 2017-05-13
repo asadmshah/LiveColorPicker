@@ -20,6 +20,8 @@ interface MainContract {
 
         fun setImage(bitmap: Bitmap?)
 
+        fun getImage(): Bitmap?
+
         fun setPoint(x: Float, y: Float)
 
         fun setColor(color: Int)
@@ -54,6 +56,8 @@ interface MainContract {
         fun onCaptureButtonClicked()
 
         fun onColorsButtonClicked()
+
+        fun onPaletteButtonClicked()
     }
 
 }
