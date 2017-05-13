@@ -4,15 +4,11 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import com.asadmshah.livecolorpicker.colors.Colorizer
 import com.asadmshah.livecolorpicker.database.ColorsStore
-import com.asadmshah.livecolorpicker.models.Color
-import com.asadmshah.livecolorpicker.models.ColorList
-import com.asadmshah.livecolorpicker.models.ColorPalette
 import com.asadmshah.livecolorpicker.screens.ActivityComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class MainPresenter(val view: MainContract.View, component: ActivityComponent) : MainContract.Presenter {
@@ -108,7 +104,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
         colorizer.map(c)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { (name, _, _), _ ->
+                .subscribe { (name, _), _ ->
                     view.setPoint(x, y)
                     view.setColor(c)
                     view.setColorCode(c)
@@ -142,9 +138,6 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
         colorizerDisposable?.dispose()
         colorizerDisposable = colorizer
                 .palette(bitmap)
-                .map { Color(it.first, it.third) }
-                .toList()
-                .map { items -> ColorPalette(Date(), ColorList().apply { addAll(items) }) }
                 .flatMap { colorsStore.insert(it) }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())

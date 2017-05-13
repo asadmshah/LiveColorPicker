@@ -11,10 +11,6 @@ internal data class RGBColor(val r: Int, val g: Int, val b: Int) {
         }
     }
 
-    fun toHex(): String {
-        return String.format("#%06X", (0xFFFFFF and toInt()))
-    }
-
     fun toInt(): Int {
         return android.graphics.Color.rgb(r, g, b)
     }
