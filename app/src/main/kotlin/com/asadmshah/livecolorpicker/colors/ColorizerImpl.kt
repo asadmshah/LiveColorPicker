@@ -54,7 +54,7 @@ class ColorizerImpl constructor(val context: Context) : Colorizer {
                 .fromCallable {
                     Palette.from(bitmap).generate().swatches
                 }
-                .flatMapIterable { it }
+                .flatMapIterable { it.sortByDescending { it.hsl[2] }; it }
                 .flatMap { map(it.rgb).toObservable() }
                 .toList()
                 .map { items -> ColorPalette(Date(), ColorList().apply { addAll(items) }) }
