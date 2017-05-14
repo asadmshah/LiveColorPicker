@@ -11,7 +11,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.*
 
-class ColorizerImpl constructor(val context: Context) : Colorizer {
+internal class ColorizerImpl constructor(val context: Context) : Colorizer {
 
     private val cached: Observable<Triple<String, RGBColor, LABColor>> = Observable
             .create<Triple<String, RGBColor, LABColor>> { emitter ->
