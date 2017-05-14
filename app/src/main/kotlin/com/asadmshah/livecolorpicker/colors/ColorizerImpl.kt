@@ -1,38 +1,25 @@
 package com.asadmshah.livecolorpicker.colors
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.support.v7.graphics.Palette
-import com.asadmshah.livecolorpicker.R
 import com.asadmshah.livecolorpicker.models.Color
 import com.asadmshah.livecolorpicker.models.ColorList
 import com.asadmshah.livecolorpicker.models.ColorPalette
+import com.asadmshah.livecolorpicker.storage.Storage
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.*
 
-internal class ColorizerImpl constructor(val context: Context) : Colorizer {
+internal class ColorizerImpl constructor(val storage: Storage) : Colorizer {
 
-    private val cached: Observable<Triple<String, RGBColor, LABColor>> = Observable
-            .create<Triple<String, RGBColor, LABColor>> { emitter ->
-                context.resources.openRawResource(R.raw.colors).use {
-                    it.bufferedReader().useLines { sequence ->
-                        sequence.filterIndexed { i, _ -> i > 0 }
-                                .map {
-                                    val split = it.split("\t")
-                                    val name = split[0].trim()
-                                    val code = android.graphics.Color.parseColor(split[1].trim())
-                                    val rgb = RGBColor.create(code)
-                                    val lab = LABColor.create(code)
-                                    Triple(name, rgb, lab)
-
-                                }
-                                .forEach {
-                                    emitter.onNext(it)
-                                }
-                    }
-                }
-                emitter.onComplete()
+    private val cached: Observable<Triple<String, RGBColor, LABColor>> = storage.colorsFileStream()
+            .map {
+                val split = it.split("\t")
+                val name = split[0].trim()
+                val code = android.graphics.Color.parseColor(split[1].trim())
+                val rgb = RGBColor.create(code)
+                val lab = LABColor.create(code)
+                Triple(name, rgb, lab)
             }
             .cache()
 

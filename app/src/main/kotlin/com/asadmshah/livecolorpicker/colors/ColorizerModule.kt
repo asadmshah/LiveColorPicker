@@ -1,6 +1,6 @@
 package com.asadmshah.livecolorpicker.colors
 
-import android.content.Context
+import com.asadmshah.livecolorpicker.storage.Storage
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -10,8 +10,8 @@ class ColorizerModule {
 
     @Provides
     @Singleton
-    fun colorizer(context: Context): Colorizer {
-        return ColorizerImpl(context)
+    fun colorizer(storage: Storage): Colorizer {
+        return ColorizerImpl(storage)
     }
 
 }
