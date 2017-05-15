@@ -41,7 +41,11 @@ internal class ColorizerImpl constructor(val storage: Storage) : Colorizer {
                 .fromCallable {
                     Palette.from(bitmap).generate().swatches
                 }
-                .flatMapIterable { it.sortByDescending { it.hsl[2] }; it }
+                .flatMapIterable {
+                    val mutable = it.toMutableList()
+                    mutable.sortByDescending { it.hsl[2] }
+                    mutable
+                }
                 .flatMap { map(it.rgb).toObservable() }
                 .toList()
                 .map { items -> ColorPalette(Date(), ColorList().apply { addAll(items) }) }
