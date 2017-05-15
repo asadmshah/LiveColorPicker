@@ -33,7 +33,7 @@ internal class ColorizerImpl constructor(val storage: Storage) : Colorizer {
                     if (diffa < diffb) a else b
                 }
                 .toSingle()
-                .map { (name, rgb) -> Color(name, rgb.toInt()) }
+                .map { (name, _) -> Color(name, rgb) }
     }
 
     override fun palette(bitmap: Bitmap): Single<ColorPalette> {
@@ -41,11 +41,9 @@ internal class ColorizerImpl constructor(val storage: Storage) : Colorizer {
                 .fromCallable {
                     Palette.from(bitmap).generate().swatches
                 }
-                .flatMapIterable {
-                    val mutable = it.toMutableList()
-                    mutable.sortByDescending { it.hsl[2] }
-                    mutable
-                }
+                .flatMapIterable { it }
+                .sorted { o1, o2 -> o2.hsl[2].compareTo(o1.hsl[2]) }
+                .distinct { it.rgb }
                 .flatMap { map(it.rgb).toObservable() }
                 .toList()
                 .map { items -> ColorPalette(Date(), ColorList().apply { addAll(items) }) }
