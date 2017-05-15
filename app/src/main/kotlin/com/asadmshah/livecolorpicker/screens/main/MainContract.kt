@@ -8,6 +8,8 @@ interface MainContract {
 
     interface View {
 
+        fun navigateToColorsListActivity()
+
         fun cameraOpen()
 
         fun cameraClose()

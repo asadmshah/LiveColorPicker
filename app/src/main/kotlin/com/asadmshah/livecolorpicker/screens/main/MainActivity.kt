@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.widget.ImageView
 import android.widget.TextView
 import com.asadmshah.livecolorpicker.R
+import com.asadmshah.livecolorpicker.screens.colors_list.ColorsListActivity
 import com.asadmshah.livecolorpicker.widgets.*
 
 class MainActivity : BaseActivity(), MainContract.View {
@@ -64,6 +65,11 @@ class MainActivity : BaseActivity(), MainContract.View {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         presenter.onCameraPermissionResult(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+    }
+
+    override fun navigateToColorsListActivity() {
+        val intent = ColorsListActivity.createIntent(this)
+        startActivity(intent)
     }
 
     override fun cameraOpen() {

@@ -117,7 +117,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
     }
 
     override fun onColorsButtonClicked() {
-
+        view.navigateToColorsListActivity()
     }
 
     override fun onPaletteButtonClicked() {
