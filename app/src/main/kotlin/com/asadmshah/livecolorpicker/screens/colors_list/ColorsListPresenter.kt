@@ -53,9 +53,18 @@ class ColorsListPresenter(private val view: ColorsListContract.View, component: 
 
     }
 
+    override fun onNavigationButtonClicked() {
+        view.navigateUp()
+    }
+
+    override fun onPullToRefresh() {
+        requestContent()
+    }
+
     fun requestContent() {
         colorPaletteListDisposable?.dispose()
 
+        view.setProgressBarEnabled(true)
         colorPaletteListDisposable = colorsStore
                 .read()
                 .toList()
@@ -64,6 +73,7 @@ class ColorsListPresenter(private val view: ColorsListContract.View, component: 
                 .subscribe { items, _ ->
                     colorPaletteList = items
                     view.notifyDataSetChanged()
+                    view.setProgressBarEnabled(false)
                 }
     }
 }

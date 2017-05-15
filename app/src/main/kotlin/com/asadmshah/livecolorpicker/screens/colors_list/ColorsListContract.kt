@@ -8,9 +8,13 @@ interface ColorsListContract {
 
     interface View {
 
+        fun navigateUp()
+
         fun enableList()
 
         fun notifyDataSetChanged()
+
+        fun setProgressBarEnabled(enabled: Boolean)
     }
 
     interface Presenter {
@@ -28,6 +32,10 @@ interface ColorsListContract {
         fun onBindViewHolder(viewHolder: ViewHolder, position: Int)
 
         fun onListItemClicked(position: Int)
+
+        fun onNavigationButtonClicked()
+
+        fun onPullToRefresh()
     }
 
     interface ViewHolder {

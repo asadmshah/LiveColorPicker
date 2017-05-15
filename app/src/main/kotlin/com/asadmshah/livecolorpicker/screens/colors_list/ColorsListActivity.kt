@@ -30,6 +30,10 @@ class ColorsListActivity: BaseActivity(), ColorsListContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_colors_list)
 
+        viewToolbar.setNavigationOnClickListener { presenter.onNavigationButtonClicked() }
+
+        viewSwipeRefresh.setOnRefreshListener { presenter.onPullToRefresh() }
+
         viewList.layoutManager = LinearLayoutManager(this)
         viewList.setHasFixedSize(true)
 
@@ -48,6 +52,10 @@ class ColorsListActivity: BaseActivity(), ColorsListContract.View {
         presenter.onDestroy()
     }
 
+    override fun navigateUp() {
+        super.onBackPressed() // Cheatcodes
+    }
+
     override fun enableList() {
         adapter = Adapter(presenter)
         viewList.adapter = adapter
@@ -55,5 +63,9 @@ class ColorsListActivity: BaseActivity(), ColorsListContract.View {
 
     override fun notifyDataSetChanged() {
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun setProgressBarEnabled(enabled: Boolean) {
+        viewSwipeRefresh.isRefreshing = enabled
     }
 }
