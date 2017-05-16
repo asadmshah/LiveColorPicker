@@ -6,7 +6,7 @@
     android:layout_height="192dp"
     >
 
-    <com.asadmshah.livecolorpicker.widgets.PaletteGridView
+    <com.asadmshah.livecolorpicker.widgets.PaletteColumnsView
         android:id="@+id/palette_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

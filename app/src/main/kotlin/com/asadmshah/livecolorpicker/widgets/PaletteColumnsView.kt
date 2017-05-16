@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.asadmshah.livecolorpicker.models.ColorList
 
-class PaletteGridView : View {
+class PaletteColumnsView : View {
 
     var colorList: ColorList? = null
         set(value) {

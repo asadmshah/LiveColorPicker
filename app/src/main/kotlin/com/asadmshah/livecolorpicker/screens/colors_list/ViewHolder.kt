@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TextView
 import com.asadmshah.livecolorpicker.R
 import com.asadmshah.livecolorpicker.models.ColorList
-import com.asadmshah.livecolorpicker.widgets.PaletteGridView
+import com.asadmshah.livecolorpicker.widgets.PaletteColumnsView
 import java.text.DateFormat
 import java.util.*
 
@@ -14,13 +14,13 @@ internal class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), C
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance()
 
     private val viewDate: TextView = itemView.findViewById(R.id.date) as TextView
-    private val viewPaletteGrid: PaletteGridView = itemView.findViewById(R.id.palette_grid) as PaletteGridView
+    private val viewPaletteColumns: PaletteColumnsView = itemView.findViewById(R.id.palette_grid) as PaletteColumnsView
 
     override fun setDate(date: Date) {
         viewDate.text = dateFormat.format(date)
     }
 
     override fun setColorList(colorList: ColorList) {
-        viewPaletteGrid.colorList = colorList
+        viewPaletteColumns.colorList = colorList
     }
 }
