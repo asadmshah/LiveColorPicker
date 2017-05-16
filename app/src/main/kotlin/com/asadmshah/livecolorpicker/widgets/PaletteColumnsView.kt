@@ -29,7 +29,7 @@ class PaletteColumnsView : View {
     override fun onDraw(canvas: Canvas) {
         if (colorList == null || (canvas.width == 0 || canvas.height == 0)) return
 
-        val w = (canvas.width / colorList!!.size).toFloat()
+        val w = canvas.width.toFloat() / colorList!!.size.toFloat()
         val h = (canvas.height).toFloat()
 
         for (i in 0 until colorList!!.size) {
