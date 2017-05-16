@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">LiveColorPicker</string>
+    <string name="hex">Hex</string>
+    <string name="rgb">RGB</string>
+    <string name="hsl">HSL</string>
+    <string name="text_copied">Text Copied</string>
 </resources>

@@ -50,7 +50,9 @@ class ColorsListPresenter(private val view: ColorsListContract.View, component: 
     }
 
     override fun onListItemClicked(position: Int) {
-
+        colorPaletteList?.get(position)?.let {
+            view.navigateToPaletteGridScreen(it)
+        }
     }
 
     override fun onNavigationButtonClicked() {

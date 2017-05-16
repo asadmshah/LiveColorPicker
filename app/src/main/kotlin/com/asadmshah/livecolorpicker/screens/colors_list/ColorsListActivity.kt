@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import com.asadmshah.livecolorpicker.R
+import com.asadmshah.livecolorpicker.models.ColorPalette
+import com.asadmshah.livecolorpicker.screens.palette_grid.PaletteGridActivity
 import com.asadmshah.livecolorpicker.widgets.BaseActivity
 
 class ColorsListActivity: BaseActivity(), ColorsListContract.View {
@@ -52,8 +54,13 @@ class ColorsListActivity: BaseActivity(), ColorsListContract.View {
         presenter.onDestroy()
     }
 
+    override fun navigateToPaletteGridScreen(colorPalette: ColorPalette) {
+        val intent = PaletteGridActivity.createIntent(this, colorPalette)
+        startActivity(intent)
+    }
+
     override fun navigateUp() {
-        super.onBackPressed() // Cheatcodes
+        super.onBackPressed()
     }
 
     override fun enableList() {

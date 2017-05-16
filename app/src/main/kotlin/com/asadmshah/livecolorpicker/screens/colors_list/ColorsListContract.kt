@@ -2,11 +2,14 @@ package com.asadmshah.livecolorpicker.screens.colors_list
 
 import android.os.Bundle
 import com.asadmshah.livecolorpicker.models.ColorList
+import com.asadmshah.livecolorpicker.models.ColorPalette
 import java.util.*
 
 interface ColorsListContract {
 
     interface View {
+
+        fun navigateToPaletteGridScreen(colorPalette: ColorPalette)
 
         fun navigateUp()
 
