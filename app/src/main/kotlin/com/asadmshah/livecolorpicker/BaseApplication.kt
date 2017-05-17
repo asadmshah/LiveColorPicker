@@ -2,6 +2,8 @@ package com.asadmshah.livecolorpicker
 
 import android.app.Application
 import android.content.Context
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crash.FirebaseCrash
 import timber.log.Timber
 
 class BaseApplication : Application() {
@@ -19,7 +21,24 @@ class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Timber.plant(Timber.DebugTree())
+        prepareAnalytics()
+        prepareLogging()
+    }
+
+    private fun prepareLogging() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        } else {
+            Timber.plant(object : Timber.Tree() {
+                override fun log(priority: Int, tag: String, message: String, t: Throwable) {
+                    FirebaseCrash.report(t)
+                }
+            })
+        }
+    }
+
+    private fun prepareAnalytics() {
+        FirebaseAnalytics.getInstance(this)
     }
 
 }
