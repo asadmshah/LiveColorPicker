@@ -2,6 +2,7 @@ package com.asadmshah.livecolorpicker
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crash.FirebaseCrash
 import timber.log.Timber
@@ -30,8 +31,10 @@ class BaseApplication : Application() {
             Timber.plant(Timber.DebugTree())
         } else {
             Timber.plant(object : Timber.Tree() {
-                override fun log(priority: Int, tag: String, message: String, t: Throwable) {
-                    FirebaseCrash.report(t)
+                override fun log(priority: Int, tag: String?, message: String?, t: Throwable?) {
+                    if (priority == Log.VERBOSE || priority == Log.DEBUG) return
+                    FirebaseCrash.log(message)
+                    if (t != null) FirebaseCrash.report(t)
                 }
             })
         }

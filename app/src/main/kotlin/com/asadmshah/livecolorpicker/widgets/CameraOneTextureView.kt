@@ -10,7 +10,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 
 class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
 
@@ -68,8 +67,6 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        Timber.d("onSurfaceTextureAvailable")
-
         val camera = Camera.open()
         val params = camera.parameters
 
