@@ -4,11 +4,15 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import com.asadmshah.livecolorpicker.colors.Colorizer
 import com.asadmshah.livecolorpicker.database.ColorsStore
+import com.asadmshah.livecolorpicker.models.Color
+import com.asadmshah.livecolorpicker.models.ColorList
+import com.asadmshah.livecolorpicker.models.ColorPalette
 import com.asadmshah.livecolorpicker.screens.ActivityComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class MainPresenter(val view: MainContract.View, component: ActivityComponent) : MainContract.Presenter {
@@ -40,6 +44,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
     var nextTransition: (() -> Unit)? = null
     var isCameraOpened: Boolean = false
     var colorizerDisposable: Disposable? = null
+    var previousColor: Color? = null
 
     init {
         component.inject(this)
@@ -104,11 +109,13 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
         colorizer.map(c)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { (name, _), _ ->
+                .subscribe { color, _ ->
+                    previousColor = color
+
                     view.setPoint(x, y)
                     view.setColor(c)
                     view.setColorCode(c)
-                    view.setColorName(name)
+                    view.setColorName(color.name)
                 }
     }
 
@@ -124,6 +131,22 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
         if (!isCameraOpened) return
 
         if (isStatic) requestStaticPalette() else requestDynamicPalette()
+    }
+
+    override fun onColorCaptureButtonClicked() {
+        colorizerDisposable?.dispose()
+        colorizerDisposable = previousColor?.let { color ->
+            colorsStore.insert(ColorPalette(Date(), ColorList().apply { add(color) }))
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { colors, error ->
+                        if (error != null) {
+                            Timber.d(error)
+                        } else {
+                            Timber.d("Inserted: $colors")
+                        }
+                    }
+        }
     }
 
     fun requestStaticPalette() {

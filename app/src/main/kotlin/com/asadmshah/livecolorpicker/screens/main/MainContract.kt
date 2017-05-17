@@ -60,6 +60,8 @@ interface MainContract {
         fun onColorsButtonClicked()
 
         fun onPaletteButtonClicked()
+
+        fun onColorCaptureButtonClicked()
     }
 
 }

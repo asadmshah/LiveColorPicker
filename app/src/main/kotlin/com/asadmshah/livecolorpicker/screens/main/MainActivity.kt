@@ -30,6 +30,7 @@ class MainActivity : BaseActivity(), MainContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewColorCircle.setOnClickListener { presenter.onColorCaptureButtonClicked() }
         viewCaptureButton.setOnClickListener { presenter.onCaptureButtonClicked() }
         viewPaletteButton.setOnClickListener { presenter.onPaletteButtonClicked() }
         viewColorsButton.setOnClickListener { presenter.onColorsButtonClicked() }
