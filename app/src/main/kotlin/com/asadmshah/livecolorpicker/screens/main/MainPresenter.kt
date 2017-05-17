@@ -62,6 +62,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
                 isCameraOpened = true
             } catch (t: Throwable) {
                 // TODO: Handle Error
+                Timber.e(t)
             }
         } else {
             view.requestCameraPermission()
@@ -78,6 +79,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
             view.cameraClose()
         } catch (t: Throwable) {
             // TODO: Handle Error
+            Timber.e(t)
         }
     }
 
@@ -97,6 +99,7 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
                 isCameraOpened = true
             } catch (t: Throwable) {
                 // TODO: Handle Error
+                Timber.e(t)
             }
         } else {
             // TODO: Handle Permission Error
@@ -109,13 +112,17 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
         colorizer.map(c)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { color, _ ->
-                    previousColor = color
+                .subscribe { color, error ->
+                    if (error != null) {
+                        Timber.e(error)
+                    } else {
+                        previousColor = color
 
-                    view.setPoint(x, y)
-                    view.setColor(c)
-                    view.setColorCode(c)
-                    view.setColorName(color.name)
+                        view.setPoint(x, y)
+                        view.setColor(c)
+                        view.setColorCode(c)
+                        view.setColorName(color.name)
+                    }
                 }
     }
 
@@ -139,11 +146,9 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
             colorsStore.insert(ColorPalette(Date(), ColorList().apply { add(color) }))
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { colors, error ->
+                    .subscribe { _, error ->
                         if (error != null) {
-                            Timber.d(error)
-                        } else {
-                            Timber.d("Inserted: $colors")
+                            Timber.e(error)
                         }
                     }
         }
@@ -164,11 +169,9 @@ class MainPresenter(val view: MainContract.View, component: ActivityComponent) :
                 .flatMap { colorsStore.insert(it) }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { colors, error ->
+                .subscribe { _, error ->
                     if (error != null) {
-                        Timber.d(error)
-                    } else {
-                        Timber.d("Inserted: $colors")
+                        Timber.e(error)
                     }
                 }
     }
