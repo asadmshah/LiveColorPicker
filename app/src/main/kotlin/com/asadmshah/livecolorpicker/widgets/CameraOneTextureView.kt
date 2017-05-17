@@ -10,6 +10,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
 
@@ -30,6 +31,8 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
 
     var colorDisposable: Disposable? = null
     var imageDisposable: Disposable? = null
+
+    var surfaceTextureAvailableCalled = false
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -65,6 +68,8 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+        Timber.d("onSurfaceTextureAvailable")
+
         val camera = Camera.open()
         val params = camera.parameters
 
@@ -118,6 +123,11 @@ class CameraOneTextureView : TextureView, TextureView.SurfaceTextureListener {
 
     fun cameraConnect() {
         surfaceTextureListener = this
+
+        if (surfaceTexture != null && !surfaceTextureAvailableCalled) {
+            onSurfaceTextureAvailable(surfaceTexture, width, height)
+            surfaceTextureAvailableCalled = true
+        }
     }
 
     fun cameraDisconnect() {
